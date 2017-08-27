@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour {
 
 	//references to various components
 	Rigidbody2D myRB;
-	//Animator myAnim;
+	Animator myAnim;
 
 	//boolean to control which way the character is facing and whether it stands on ground
 	bool facingRight;
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 		facingRight = true;
 		//get info on components attached to player and store them in variables
 		myRB = GetComponent<Rigidbody2D> ();
-		//myAnim = GetComponent<Animator> ();
+		myAnim = GetComponent<Animator> ();
 		onGround = false;
 	}
 
@@ -28,12 +28,14 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerStay2D (Collider2D other) {
 		if (other.gameObject.tag == "Ground")
 			onGround = true;
+			myAnim.SetBool ("inAir", false);
 	}
 
 	void Update () {
 		//enable player jumping
-		if (Input.GetAxis ("Jump") > 0 && onGround) {
+		if ((Input.GetAxis ("Jump") > 0 || Input.GetKeyDown (KeyCode.W))&& onGround) {
 			myRB.AddForce (new Vector2 (0, jumpForce));
+			myAnim.SetBool ("inAir", true);
 			onGround = false;
 		}
 	}
@@ -43,7 +45,7 @@ public class PlayerController : MonoBehaviour {
 		float move = Input.GetAxis ("Horizontal");
 
 		//if movement speed is not zero, communicate it to the animator to change the animation
-		//myAnim.SetFloat("speed", Mathf.Abs (move));
+		myAnim.SetFloat("speed", Mathf.Abs (move));
 
 		//move the player by using velocity
 		myRB.velocity = new Vector2 (move * maxSpeed, myRB.velocity.y);
