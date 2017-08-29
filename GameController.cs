@@ -32,6 +32,9 @@ public class GameController : MonoBehaviour {
 			DisplayEndLevelText ("GAME OVER");
 		if (timeLeft > 0 && RabbitController.full)
 			DisplayEndLevelText ("Level cleared!");
+		if (Input.GetKeyDown(KeyCode.Escape) {
+			SceneManager.LoadScene(0);
+		}
 	}
 
 	void CountTime () {

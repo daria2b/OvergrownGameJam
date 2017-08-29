@@ -20,7 +20,7 @@ public class GrabberScript : MonoBehaviour {
 
 	void Update () {
 		//check if player is close enough to a grabbable object and store the collider it intersected in a temporary variable
-		grabbable = Physics2D.OverlapCircle(grabCheckPosition.position, grabCheckRadius, grabLayer);
+		grabbable = Physics2D.OverlapCircle (grabCheckPosition.position, grabCheckRadius, grabLayer);
 		if (grabbable != null) {
 			//if player pressed grab button while intersecting a grabbable collider
 			if (Input.GetKeyDown (KeyCode.E) || Input.GetMouseButtonDown (0)) {
