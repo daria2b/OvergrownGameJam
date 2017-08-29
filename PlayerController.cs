@@ -5,15 +5,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
 	public float maxSpeed = 12f;
-	public float jumpForce = 1000f;
 
 	//references to various components
 	Rigidbody2D myRB;
 	Animator myAnim;
 
-	//boolean to control which way the character is facing and whether it stands on ground
+	//boolean to control which way the character is facing 
 	bool facingRight;
+	//jumping variables
 	bool onGround;
+	float groundCheckRadius = 0.2f;
+	public LayerMask groundLayer;
+	public Transform groundCheckPosition;
+	public float jumpForce = 1000f;
 
 	// Use this for initialization
 	void Start () {
@@ -24,23 +28,20 @@ public class PlayerController : MonoBehaviour {
 		onGround = false;
 	}
 
-	//set character onGround variable to true if player touches ground
-	void OnTriggerStay2D (Collider2D other) {
-		if (other.gameObject.tag == "Ground")
-			onGround = true;
-			myAnim.SetBool ("inAir", false);
-	}
-
 	void Update () {
 		//enable player jumping
-		if ((Input.GetAxis ("Jump") > 0 || Input.GetKeyDown (KeyCode.W))&& onGround) {
-			myRB.AddForce (new Vector2 (0, jumpForce));
-			myAnim.SetBool ("inAir", true);
+		if ((Input.GetAxis ("Jump") > 0 || Input.GetKeyDown (KeyCode.W)) && onGround) {
 			onGround = false;
+			myAnim.SetBool ("inAir", !onGround);
+			myRB.AddForce (new Vector2 (0, jumpForce));
 		}
 	}
 
 	void FixedUpdate () {
+		//check if the player is on ground. Returns a boolean
+		onGround = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
+		myAnim.SetBool ("inAir", !onGround);
+
 		//get input from player and perform actions where needed
 		float move = Input.GetAxis ("Horizontal");
 
