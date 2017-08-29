@@ -12,6 +12,12 @@ public class RabbitController : MonoBehaviour {
 	public static bool full;
 	public GameObject crumblesFX;
 
+	//eating variables
+	bool foodArrives;
+	float foodCheckRadius = 5f;
+	public LayerMask foodLayer;
+	public Transform foodCheckPosition;
+
 	Animator myAnim;
 
 	// Use this for initialization
@@ -25,6 +31,10 @@ public class RabbitController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		foodArrives = Physics2D.OverlapCircle(foodCheckPosition.position, foodCheckRadius, foodLayer);
+		if (foodArrives) {
+			myAnim.SetBool ("foodArrived", true);
+		}
 		//if rabbit's hunger was fulfilled, then the level was cleared!
 		if (currentHunger == maxHunger)
 			full = true;
@@ -33,10 +43,10 @@ public class RabbitController : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D other) {
 		if (other.tag == "Grabbable") {
 			currentHunger += 1f;
-			myAnim.SetTrigger ("foodArrived");
 			hungerSlider.value = currentHunger;
 			Destroy (other.gameObject);
 			Invoke ("LaunchCrumblesFX", 0.3f);
+			myAnim.SetBool ("foodArrived", false);
 		}
 	}
 
